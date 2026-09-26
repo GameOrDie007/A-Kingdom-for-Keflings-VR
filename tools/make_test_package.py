@@ -136,8 +136,10 @@ INSTALL
 -------
 
 Run SETUP.bat. It finds the game, copies two files into it, and checks they
-arrived intact. At the end it tells you whether your headset software is
-running, and offers to start the game.
+arrived intact. It also puts a copy of itself -- SETUP, UNINSTALL and the log
+collector -- in a folder called VR inside the game folder, so you can delete
+this zip afterwards and run them from there any time. At the end it tells you
+whether your headset software is running, and offers to start the game.
 
   - The game not installed yet? Put NinjaBee's installer
     (AKingdomForKeflings_Setup.exe) in this folder, in Downloads or on the
@@ -158,9 +160,11 @@ C:\\Program Files (x86)\\NinjaBee\\AKingdomForKeflings.
 REMOVE IT
 ---------
 
-Run UNINSTALL.bat. It takes both files back out, puts your original screen
+Run UNINSTALL.bat from the VR folder inside the game folder (or from this
+folder). It takes both files back out, puts your original screen
 resolution back, and removes the port's own settings and logs, leaving the
-game exactly as it was. Your saves are never touched.
+game exactly as it was -- the VR folder removes itself once the window
+closes. Your saves are never touched.
 
 By hand: delete opengl32.dll from the game folder. That alone is enough to
 turn the port off.
@@ -299,9 +303,6 @@ KNOWN ISSUES
    starts, so there is no need to change it. If you do change it in the
    game's own options, restart the game once: until you do, parts of the
    world at the edges of your view can be missing.
- * A long save list can draw slightly past the edge of its box.
- * The "What's Next" panel does not darken the world behind it the way the
-   other menus do.
  * Occasional stalls -- one short one as a menu closes, while the scenery
    is gathered up again. The port records any frame over 25 ms in its log
    along with where the time went, so if you hit them the log will say
@@ -332,8 +333,9 @@ cause is that only a 64-bit runtime is installed.
 SENDING A LOG BACK
 ------------------
 
-Run collect-log.bat. It gathers everything needed into one folder,
-keflings-logs, next to it -- zip that folder and send it.
+Run collect-log.bat, from the VR folder inside the game folder. It gathers
+everything needed into one folder, keflings-logs, next to it -- zip that
+folder and send it.
 
 The port writes its log into the game folder, next to the exe:
 

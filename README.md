@@ -14,7 +14,9 @@ click takes it back out.
    [Releases](https://github.com/GameOrDie007/A-Kingdom-for-Keflings-VR/releases)
    and extract it anywhere.
 2. **Run `SETUP.bat`.** It finds the game, copies the two files in, and
-   checks they arrived intact.
+   checks they arrived intact. It also leaves a copy of itself, with
+   `UNINSTALL.bat` and the log collector, in a `VR` folder inside the game
+   folder, so you can delete the zip afterwards.
    - Game not installed yet? Put NinjaBee's installer
      (`AKingdomForKeflings_Setup.exe`) in the extracted folder, in Downloads
      or on the Desktop, or drag it onto `SETUP.bat`, and setup offers to run
@@ -26,9 +28,10 @@ click takes it back out.
 There is nothing to configure. The port sets the game to your screen's
 resolution itself.
 
-To remove it, run `UNINSTALL.bat`. It takes the port out, puts your original
-screen resolution back and removes the port's settings and logs. Your saves
-are never touched.
+To remove it, run `UNINSTALL.bat` from the game folder's `VR` folder. It takes
+the port out, puts your original screen resolution back, removes the port's
+settings and logs, and then the `VR` folder itself. Your saves are never
+touched.
 
 ## What you need
 
@@ -78,12 +81,9 @@ the menu screen sits), and `draw_distance`.
 - If you change the resolution in the game's own options, restart the game
   once; until you do, parts of the world at the edges of your view can be
   missing. There should be no need to change it.
-- A long save list can draw slightly past the edge of its box.
-- The "What's Next" panel does not darken the world behind it the way the
-  other menus do.
 - Occasionally a short stall as a menu closes.
 
-If something goes wrong, run `collect-log.bat` from the extracted folder and
+If something goes wrong, run `collect-log.bat` from the game folder's `VR` folder and
 attach the `keflings-logs` folder it makes to an
 [issue](https://github.com/GameOrDie007/A-Kingdom-for-Keflings-VR/issues).
 It contains no saves and no registration details.

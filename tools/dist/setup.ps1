@@ -25,6 +25,35 @@ $ErrorActionPreference = "Stop"
 $Here = Split-Path -Parent $PSScriptRoot      # the package folder, above tools\
 $Exe  = "A Kingdom for Keflings.exe"
 $Ours = @("opengl32.dll", "openxr_loader.dll")
+# The kit SETUP leaves inside the game folder, so the zip can be deleted and
+# SETUP / UNINSTALL / the log collector are always to hand (26 Sep). An
+# explicit list: a package folder can hold other things -- one tester's held
+# the game's installer and its licence key -- and those must never be copied.
+$KitDir = "VR"
+$KitFiles = @("SETUP.bat", "UNINSTALL.bat", "collect-log.bat", "READ ME FIRST.txt",
+              "version.txt", "opengl32.dll", "openxr_loader.dll", "tools\setup.ps1",
+              "LICENSES\README.txt", "LICENSES\Apache-2.0.txt", "LICENSES\GPL-3.0.txt")
+
+function Same-Folder {
+    param([string]$a, [string]$b)
+    try {
+        return ([IO.Path]::GetFullPath($a).TrimEnd('\') -eq [IO.Path]::GetFullPath($b).TrimEnd('\'))
+    } catch { return $false }
+}
+
+# Is this folder nothing but our kit (and the logs collect-log.bat writes into
+# it), with no junction or link inside? Only then may it be deleted whole.
+function Is-OnlyOurKit {
+    param([string]$d)
+    $items = @(Get-ChildItem -LiteralPath $d -Recurse -Force -ErrorAction SilentlyContinue)
+    foreach ($i in $items) {
+        if ($i.Attributes -band [IO.FileAttributes]::ReparsePoint) { return $false }
+        if ($i.PSIsContainer) { continue }
+        $rel = $i.FullName.Substring($d.TrimEnd('\').Length + 1)
+        if ($KitFiles -notcontains $rel -and -not $rel.StartsWith("keflings-logs\")) { return $false }
+    }
+    return $true
+}
 
 function Say { param([string]$m) Write-Host ("   " + $m) }
 
@@ -104,6 +133,13 @@ function Find-Game {
             if (Is-GameFolder $g) { Say "using the folder you dropped."; return $g }
             if (-not $Quiet) { Say "that folder has no $Exe in it:"; Say "  $g" }
         }
+    }
+    # Run from the copy SETUP leaves in the game's own VR folder: the game is
+    # the folder that VR folder sits in.
+    $parent = Split-Path -Parent $Here
+    if ((Split-Path -Leaf $Here) -eq $KitDir -and (Is-GameFolder $parent)) {
+        Say "running from the game's own $KitDir folder."
+        return $parent
     }
     if ($script:pretend) { return "" }
 
@@ -280,6 +316,32 @@ if ($Uninstall) {
             ForEach-Object { try { Remove-Item -LiteralPath $_.FullName -Force } catch { } }
     }
     if ($cleared.Count -gt 0) { Say ("Removed the port's settings and logs: " + ($cleared -join ", ")) }
+
+    # And the kit SETUP left in the game folder. Running from inside it, this
+    # batch file is still open, so the folder goes a few seconds after it closes.
+    $vr = Join-Path $game $KitDir
+    if (Test-Path -LiteralPath $vr -PathType Container) {
+        if (-not (Is-OnlyOurKit $vr)) {
+            Say "Left the $KitDir folder in the game folder: it holds files that"
+            Say "are not this port's. Delete it yourself if you do not need them:"
+            Say "  $vr"
+        } elseif (Same-Folder $Here $vr) {
+            # UNINSTALL.bat's own window stands IN this folder (pushd), and
+            # Windows will not delete a folder a process is standing in -- so
+            # keep trying, quietly, until that window has closed (10 minutes
+            # at most). The path travels in the environment: no quoting.
+            $env:KV_REMOVE_KIT = $vr
+            # ...and it must not stand in that folder itself: started from here
+            # it would inherit the batch's current folder, the VR folder.
+            Start-Process -FilePath "powershell.exe" -WindowStyle Hidden -WorkingDirectory $env:TEMP -ArgumentList @(
+                '-NoProfile', '-Command',
+                'for ($i = 0; $i -lt 300; $i++) { Start-Sleep 2; if (-not (Test-Path -LiteralPath $env:KV_REMOVE_KIT)) { break }; try { Remove-Item -LiteralPath $env:KV_REMOVE_KIT -Recurse -Force -ErrorAction Stop } catch { } }')
+            Say "The $KitDir folder in the game folder removes itself when this window closes."
+        } else {
+            try { Remove-Item -LiteralPath $vr -Recurse -Force; Say "Removed the $KitDir folder from the game folder." }
+            catch { Say "Could not remove $vr -- delete it yourself." }
+        }
+    }
     Write-Host ""
     Say "The game is exactly as it was. Your saves are untouched."
     Write-Host ""
@@ -340,6 +402,35 @@ Say "Installed, and checked byte for byte:"
 foreach ($f in $Ours) { Say ("  " + $f) }
 Write-Host ""
 
+# The kit into the game folder, unless this IS that copy.
+$vr = Join-Path $game $KitDir
+if (-not (Same-Folder $Here $vr)) {
+    $kitBad = @()
+    if ((Test-Path -LiteralPath $vr) -and -not (Is-OnlyOurKit $vr)) {
+        Say "The game folder already has a $KitDir folder with other files in it,"
+        Say "so the kit was not copied there. The port itself is installed."
+    } else {
+        foreach ($f in $KitFiles) {
+            $src = Join-Path $Here $f
+            if (-not (Test-Path -LiteralPath $src)) { continue }
+            $dst = Join-Path $vr $f
+            try {
+                [void][IO.Directory]::CreateDirectory((Split-Path -Parent $dst))
+                Copy-Item -LiteralPath $src -Destination $dst -Force
+                if ((Get-FileHash -LiteralPath $src).Hash -ne (Get-FileHash -LiteralPath $dst).Hash) { $kitBad += $f }
+            } catch { $kitBad += $f }
+        }
+        if ($kitBad.Count -gt 0) {
+            Say ("Could not copy the kit into the game folder: " + ($kitBad -join ", "))
+        } else {
+            Say "A copy of SETUP, UNINSTALL and the log collector is now in:"
+            Say "  $vr"
+            Say "Run them from there any time. You can delete the zip and this folder."
+        }
+    }
+    Write-Host ""
+}
+
 # Is anything there to give it a headset? Without it the game just plays on
 # the monitor, which is correct but looks like the port did nothing.
 $vrApps = [ordered]@{ "VirtualDesktop.Streamer" = "Virtual Desktop"; "vrserver" = "SteamVR";
@@ -355,7 +446,7 @@ if ($running.Count -gt 0) {
     Say "SteamVR, or the Meta Quest Link app) and put the headset on first --"
     Say "without it the game simply plays on the monitor."
 }
-Say "To remove the port later, run UNINSTALL.bat."
+Say "To remove the port later, run UNINSTALL.bat in the game folder's $KitDir folder."
 Write-Host ""
 if (Ask-Yes "Start the game now?") {
     Start-Process -FilePath (Join-Path $game $Exe) -WorkingDirectory $game
