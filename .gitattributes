@@ -1,0 +1,3 @@
+# Store every file exactly as it sits on disk. The build scripts detect each
+# file's own newline style before writing, so a checkout must not change it.
+* -text
