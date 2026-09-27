@@ -1,6 +1,6 @@
 # A Kingdom for Keflings VR
 
-Play NinjaBee's **A Kingdom for Keflings** (PC) in a VR headset. The kingdom
+Play **A Kingdom for Keflings** (PC) by NinjaBee (Wahoo Studios) in a VR headset. The kingdom
 stands in front of you as a living model you look around, the menus,
 blueprints and tech tree sit on a screen in the world, and you can play with
 the controller like the Xbox version or point and click with the grip mouse.
@@ -17,10 +17,12 @@ click takes it back out.
    checks they arrived intact. It also leaves a copy of itself, with
    `UNINSTALL.bat` and the log collector, in a `VR` folder inside the game
    folder, so you can delete the zip afterwards.
-   - Game not installed yet? Put NinjaBee's installer
-     (`AKingdomForKeflings_Setup.exe`) in the extracted folder, in Downloads
-     or on the Desktop, or drag it onto `SETUP.bat`, and setup offers to run
-     it first.
+   - Game not installed yet? Download NinjaBee's installer
+     (`AKingdomForKeflings_Setup.exe`) from [their site](https://www.ninjabee.com/games/a_kingdom_for_keflings/).
+     Put it in the extracted folder, in Downloads or on the Desktop, or drag
+     it onto `SETUP.bat`, and setup offers to run it first. The installer is
+     the free demo; the license key from
+     [NinjaBee's itch.io page](https://ninjabee.itch.io/a-kingdom-for-keflings) unlocks the full game.
    - Installed somewhere unusual? Drag the game's folder onto `SETUP.bat`.
 3. **Start your headset software** (Virtual Desktop, SteamVR or the Meta
    Quest Link app), then start the game. Setup offers to start it for you.
@@ -35,8 +37,10 @@ touched.
 
 ## What you need
 
-- The PC version of A Kingdom for Keflings, installed. This project contains
-  no part of the game.
+- The PC version of A Kingdom for Keflings, installed. Buy it on
+  [NinjaBee's itch.io page](https://ninjabee.itch.io/a-kingdom-for-keflings) (a license key that
+  unlocks NinjaBee's free demo installer into the full game). This project
+  contains no part of the game.
 - A headset with a **32-bit OpenXR runtime**, because the game is a 32-bit
   program. Virtual Desktop and SteamVR both provide one. Without it the game
   simply runs on the monitor, and the log says why.
@@ -100,8 +104,10 @@ table; run it after changing a setting.
 
 ## Credits and licence
 
-- **A Kingdom for Keflings** is by NinjaBee. This is an unofficial VR port,
-  not made by, affiliated with or endorsed by them.
+- **A Kingdom for Keflings** is made by NinjaBee (Wahoo Studios), and all of
+  it is theirs: [get it on itch.io](https://ninjabee.itch.io/a-kingdom-for-keflings). This is an unofficial,
+  fan-made VR port, not made by, affiliated with or endorsed by them. It
+  contains no part of the game; you need your own copy.
 - **The OpenXR Loader** is by The Khronos Group, redistributed unmodified
   under the Apache License 2.0 (`extern/licenses/Apache-2.0.txt`).
 - **The VR port** is by Ryan Moore (Game Or Die). It is original work: a proxy
