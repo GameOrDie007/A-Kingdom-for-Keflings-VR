@@ -114,3 +114,7 @@ table; run it after changing a setting.
   for the system OpenGL library that forwards the game's calls and adds the
   VR rendering around them. Licensed under the GNU General Public License,
   version 3; see `LICENSE`.
+
+---
+
+**Get an email when the next port ships:** follow [Game Or Die on Patreon](https://www.patreon.com/cw/GameOrDie) for free. Ports are never paywalled.
