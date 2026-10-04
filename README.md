@@ -8,6 +8,8 @@ the controller like the Xbox version or point and click with the grip mouse.
 It is two files next to the game. Nothing in the game is changed, and one
 click takes it back out.
 
+**Watch the install and gameplay video:** [My Tortoise Is a Kefling (and I Ported the Game to VR)](https://youtu.be/WjhJZ88f1-M)
+
 ## Install
 
 1. **Download** `A-Kingdom-for-Keflings-VR-1.0.zip` from

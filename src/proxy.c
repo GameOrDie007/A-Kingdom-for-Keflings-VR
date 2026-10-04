@@ -4751,7 +4751,7 @@ static void mgg_frame_end(double frame_ms) {
     {
         static int dumped, pending;
         DWORD period = vr_stereo_active() ? 5000u : 1000u;
-        /* 9 is mode 7's FULL arm all the time: headset-confirmed 24 Sep */
+        /* 9 is mode 7's FULL arm all the time */
         int next_arm = g_vrcfg.merge_group == 7 ?
                        (int)((GetTickCount() / period) % 3u) :
                        g_vrcfg.merge_group == 9 ? 2 : 0;

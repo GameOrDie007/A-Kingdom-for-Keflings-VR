@@ -387,7 +387,7 @@ void input_emu_frame(HDC hdc) {
         }
     }
 
-    /* PHOTO MODE, 24 Sep 2026 (game-or-die-features 3). Hold the menu button
+    /* Photo mode. Hold the menu button
        and the HUD, the menus and their dim disappear, so the player can take
        a clean screenshot with the headset's own capture; hold it again and
        they are back. A TAP is still What's Next -- sent on the release now,
